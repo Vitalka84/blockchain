@@ -1,0 +1,1 @@
+/Users/vetal/Developing/work_git/private_projects/Blockchain/Blockchain/task/build/classes/java/main/blockchain/ChainBlock.class:/Users/vetal/Developing/work_git/private_projects/Blockchain/Blockchain/task/build/classes/java/main/blockchain/Main.class:/Users/vetal/Developing/work_git/private_projects/Blockchain/Blockchain/task/build/classes/java/main/blockchain/StringUtil.class

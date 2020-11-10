@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="BlockchainTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2020-11-10T10:58:25" hostname="Vitaliys-MBP-2.office.int" time="26.535">
+  <properties/>
+  <testcase name="start" classname="BlockchainTest" time="26.535"/>
+  <system-out><![CDATA[?[1;31m
+Start test 1?[0m
+Block:
+Created by: Nick
+Nick gets 100 VC
+Id: 1
+Timestamp: 1605005905109
+Magic number: -520803557
+Hash of the previous block: 
+0
+Hash of the block: 
+002baec5c70c08b6c67cc61cf3c15a4cd7cfb99c7d76230e6eafb39710367119
+Block data: no messages
+Block was generating for: 0 seconds
+N stays the same
+
+Block:
+Created by: Nick
+Nick gets 100 VC
+Id: 2
+Timestamp: 1605005905636
+Magic number: -1498286714
+Hash of the previous block: 
+002baec5c70c08b6c67cc61cf3c15a4cd7cfb99c7d76230e6eafb39710367119
+Hash of the block: 
+000d64c1c57e4a6b1ab1264a2c594a23571b6a48fdb2a0dd2fdd82d08d989807
+Block data: 
+Alice sent 20.0 VC to Tom
+Alice sent 13.0 VC to FastFood
+Block was generating for: 0 seconds
+N was increased to 4
+
+Block:
+Created by: FastFood
+FastFood gets 100 VC
+Id: 3
+Timestamp: 1605005906159
+Magic number: 1922194360
+Hash of the previous block: 
+000d64c1c57e4a6b1ab1264a2c594a23571b6a48fdb2a0dd2fdd82d08d989807
+Hash of the block: 
+0000cdf41180d02c3ee8dd2a193ca1b8f9d19e81fc4cf10cf726992a2690d11a
+Block data: 
+Tom sent 12.0 VC to Sarah
+Block was generating for: 0 seconds
+N was increased to 5
+
+Block:
+Created by: Tom
+Tom gets 100 VC
+Id: 4
+Timestamp: 1605005906792
+Magic number: -1024500523
+Hash of the previous block: 
+0000cdf41180d02c3ee8dd2a193ca1b8f9d19e81fc4cf10cf726992a2690d11a
+Hash of the block: 
+000004bdd48e82ba37194ad88d428367d97014ebf8dab0bb82f1f32a9f527f1d
+Block data: 
+Bob sent 29.0 VC to Alice
+Block was generating for: 0 seconds
+N was increased to 6
+
+Block:
+Created by: ShoesShop
+ShoesShop gets 100 VC
+Id: 5
+Timestamp: 1605005907670
+Magic number: 2025096625
+Hash of the previous block: 
+000004bdd48e82ba37194ad88d428367d97014ebf8dab0bb82f1f32a9f527f1d
+Hash of the block: 
+000007e0b8bf43b6b0032725293635dc14e746f1a62b12fb5d37300fa4e607d4
+Block data: 
+ShoesShop sent 21.0 VC to FastFood
+Bob sent 24.0 VC to Sarah
+Block was generating for: 1 seconds
+N stays the same
+
+Block:
+Created by: Alice
+Alice gets 100 VC
+Id: 6
+Timestamp: 1605005909641
+Magic number: 675549617
+Hash of the previous block: 
+000007e0b8bf43b6b0032725293635dc14e746f1a62b12fb5d37300fa4e607d4
+Hash of the block: 
+00000af26961fc63b7b5852ab28bccf1ca2ba3fa549ef931ca0579f53b5e672c
+Block data: 
+Sarah sent 28.0 VC to Tom
+ShoesShop sent 29.0 VC to Tom
+Nick sent 20.0 VC to Sarah
+Block was generating for: 0 seconds
+N stays the same
+
+Block:
+Created by: Sarah
+Sarah gets 100 VC
+Id: 7
+Timestamp: 1605005910170
+Magic number: -83284630
+Hash of the previous block: 
+00000af26961fc63b7b5852ab28bccf1ca2ba3fa549ef931ca0579f53b5e672c
+Hash of the block: 
+00000c95af89d0ab59e7314d8bf8167ab9124b51a78210c815386b249b81a018
+Block data: 
+Alice sent 19.0 VC to FastFood
+Block was generating for: 0 seconds
+N stays the same
+
+Block:
+Created by: FastFood
+FastFood gets 100 VC
+Id: 8
+Timestamp: 1605005910846
+Magic number: 136130125
+Hash of the previous block: 
+00000c95af89d0ab59e7314d8bf8167ab9124b51a78210c815386b249b81a018
+Hash of the block: 
+00000b1cd462cf34c1171be282eac8c83f3bad890c3fb210a8066fd87858f82c
+Block data: 
+Bob sent 14.0 VC to ShoesShop
+Nick sent 10.0 VC to ShoesShop
+Block was generating for: 0 seconds
+N stays the same
+
+Block:
+Created by: Bob
+Bob gets 100 VC
+Id: 9
+Timestamp: 1605005911812
+Magic number: 1190808407
+Hash of the previous block: 
+00000b1cd462cf34c1171be282eac8c83f3bad890c3fb210a8066fd87858f82c
+Hash of the block: 
+000002465f4ee0105d410544cdbcf5fca5c7cdf1af8e0ccd2e2ac61e9a17806d
+Block data: 
+Nick sent 26.0 VC to Bob
+Alice sent 26.0 VC to FastFood
+Block was generating for: 0 seconds
+N stays the same
+
+Block:
+Created by: Nick
+Nick gets 100 VC
+Id: 10
+Timestamp: 1605005912341
+Magic number: -2132289542
+Hash of the previous block: 
+000002465f4ee0105d410544cdbcf5fca5c7cdf1af8e0ccd2e2ac61e9a17806d
+Hash of the block: 
+00000dc1adea91720f0bed4cc07c3765c9ebe9c6c12af27ada903f7744114594
+Block data: 
+ShoesShop sent 27.0 VC to Sarah
+Block was generating for: 0 seconds
+N stays the same
+
+Block:
+Created by: Sarah
+Sarah gets 100 VC
+Id: 11
+Timestamp: 1605005913363
+Magic number: -27426738
+Hash of the previous block: 
+00000dc1adea91720f0bed4cc07c3765c9ebe9c6c12af27ada903f7744114594
+Hash of the block: 
+0000052e24d3e47ef94edfcecbcfcf7670544b7c87ecc6a2b3f18923510ee984
+Block data: 
+Sarah sent 29.0 VC to Tom
+Alice sent 12.0 VC to Tom
+Block was generating for: 0 seconds
+N stays the same
+
+Block:
+Created by: FastFood
+FastFood gets 100 VC
+Id: 12
+Timestamp: 1605005914755
+Magic number: 1314773204
+Hash of the previous block: 
+0000052e24d3e47ef94edfcecbcfcf7670544b7c87ecc6a2b3f18923510ee984
+Hash of the block: 
+00000dd957a8c68de69b1e36a7a7f746939e332d03cee76032ff01f87776cf5e
+Block data: 
+Bob sent 16.0 VC to Alice
+Nick sent 25.0 VC to Bob
+Sarah sent 29.0 VC to Tom
+Block was generating for: 0 seconds
+N stays the same
+
+Block:
+Created by: Alice
+Alice gets 100 VC
+Id: 13
+Timestamp: 1605005915299
+Magic number: -2106206293
+Hash of the previous block: 
+00000dd957a8c68de69b1e36a7a7f746939e332d03cee76032ff01f87776cf5e
+Hash of the block: 
+000001a9ae2dd82f7253af2a88074a617d2c23709067362e27e8fda901a14231
+Block data: 
+Nick sent 18.0 VC to ShoesShop
+Block was generating for: 0 seconds
+N stays the same
+
+Block:
+Created by: FastFood
+FastFood gets 100 VC
+Id: 14
+Timestamp: 1605005916429
+Magic number: 979219468
+Hash of the previous block: 
+000001a9ae2dd82f7253af2a88074a617d2c23709067362e27e8fda901a14231
+Hash of the block: 
+000009ef3ac09d9007d7972319d77497837978460edcb2c0edaa558c62985546
+Block data: 
+Nick sent 10.0 VC to Bob
+Sarah sent 18.0 VC to Nick
+Block was generating for: 0 seconds
+N stays the same
+
+Block:
+Created by: FastFood
+FastFood gets 100 VC
+Id: 15
+Timestamp: 1605005917520
+Magic number: -2101862004
+Hash of the previous block: 
+000009ef3ac09d9007d7972319d77497837978460edcb2c0edaa558c62985546
+Hash of the block: 
+0000009b3bd38d54d4fd35363e55186ae11c76deb543166c9869ffac8de8dd36
+Block data: 
+Nick sent 19.0 VC to FastFood
+Tom sent 10.0 VC to Bob
+Block was generating for: 0 seconds
+N stays the same
+
+?[1;31m
+Start test 2?[0m
+Block:
+Created by: Bob
+Bob gets 100 VC
+Id: 1
+Timestamp: 1605005918190
+Magic number: -741814196
+Hash of the previous block: 
+0
+Hash of the block: 
+002d553e376f11f81a69e294b4b2e5f7d1577f76df47527a07b55a7ed8b6875e
+Block data: no messages
+Block was generating for: 0 seconds
+N stays the same
+
+Block:
+Created by: Nick
+Nick gets 100 VC
+Id: 2
+Timestamp: 1605005918702
+Magic number: -839574747
+Hash of the previous block: 
+002d553e376f11f81a69e294b4b2e5f7d1577f76df47527a07b55a7ed8b6875e
+Hash of the block: 
+00039425d6919cb10aef6da900bf4299a97bfa9faad1f84f0ee20b200b10d5bc
+Block data: 
+Nick sent 21.0 VC to Alice
+FastFood sent 29.0 VC to Nick
+Block was generating for: 0 seconds
+N was increased to 4
+
+Block:
+Created by: FastFood
+FastFood gets 100 VC
+Id: 3
+Timestamp: 1605005919219
+Magic number: 1553501121
+Hash of the previous block: 
+00039425d6919cb10aef6da900bf4299a97bfa9faad1f84f0ee20b200b10d5bc
+Hash of the block: 
+00009b02a7eeec9637661da84314325f72eacf708e16c2093739ef9507b637e5
+Block data: 
+FastFood sent 11.0 VC to Sarah
+Block was generating for: 0 seconds
+N was increased to 5
+
+Block:
+Created by: Sarah
+Sarah gets 100 VC
+Id: 4
+Timestamp: 1605005919753
+Magic number: -1293016812
+Hash of the previous block: 
+00009b02a7eeec9637661da84314325f72eacf708e16c2093739ef9507b637e5
+Hash of the block: 
+000000e0d6b819bd6d31fb3098d9dee9b7686d40d6017f7bc38f295ce3a84f35
+Block data: 
+Bob sent 19.0 VC to Tom
+Block was generating for: 0 seconds
+N was increased to 6
+
+Block:
+Created by: Nick
+Nick gets 100 VC
+Id: 5
+Timestamp: 1605005920558
+Magic number: -1458184529
+Hash of the previous block: 
+000000e0d6b819bd6d31fb3098d9dee9b7686d40d6017f7bc38f295ce3a84f35
+Hash of the block: 
+00000b2bee769e339ed302836a1a688a975175d237746a2ea9c8dea8a00dcfc1
+Block data: 
+Nick sent 14.0 VC to ShoesShop
+Block was generating for: 0 seconds
+N stays the same
+
+Block:
+Created by: FastFood
+FastFood gets 100 VC
+Id: 6
+Timestamp: 1605005921275
+Magic number: 1264244846
+Hash of the previous block: 
+00000b2bee769e339ed302836a1a688a975175d237746a2ea9c8dea8a00dcfc1
+Hash of the block: 
+00000275b799c22e14afbd33c16df67e2724a55e7635add73a56b6e5d0f39d45
+Block data: 
+Bob sent 14.0 VC to Nick
+Sarah sent 24.0 VC to Tom
+Block was generating for: 1 seconds
+N stays the same
+
+Block:
+Created by: Tom
+Tom gets 100 VC
+Id: 7
+Timestamp: 1605005922867
+Magic number: 214443324
+Hash of the previous block: 
+00000275b799c22e14afbd33c16df67e2724a55e7635add73a56b6e5d0f39d45
+Hash of the block: 
+000003804e10d02920b356aee97c78014deace81dfff64b83b97d897fc9b78e1
+Block data: 
+FastFood sent 25.0 VC to Nick
+ShoesShop sent 21.0 VC to Bob
+ShoesShop sent 19.0 VC to Nick
+Block was generating for: 0 seconds
+N stays the same
+
+Block:
+Created by: ShoesShop
+ShoesShop gets 100 VC
+Id: 8
+Timestamp: 1605005923810
+Magic number: -1499542756
+Hash of the previous block: 
+000003804e10d02920b356aee97c78014deace81dfff64b83b97d897fc9b78e1
+Hash of the block: 
+000009b36154fe41d193eb3b9dbf7579015e4ab2ebcf82e17e45fd56392c2316
+Block data: 
+Nick sent 10.0 VC to Sarah
+ShoesShop sent 14.0 VC to Tom
+Block was generating for: 0 seconds
+N stays the same
+
+Block:
+Created by: Bob
+Bob gets 100 VC
+Id: 9
+Timestamp: 1605005924321
+Magic number: 1858021081
+Hash of the previous block: 
+000009b36154fe41d193eb3b9dbf7579015e4ab2ebcf82e17e45fd56392c2316
+Hash of the block: 
+00000da258f1f1b9509c0c42ea89ac6e0eca554983ffcd39eccd98101adc7655
+Block data: 
+ShoesShop sent 29.0 VC to Alice
+Block was generating for: 1 seconds
+N stays the same
+
+Block:
+Created by: Nick
+Nick gets 100 VC
+Id: 10
+Timestamp: 1605005925985
+Magic number: 1125622480
+Hash of the previous block: 
+00000da258f1f1b9509c0c42ea89ac6e0eca554983ffcd39eccd98101adc7655
+Hash of the block: 
+00000f956ce76ed0e03235367fe5b5931a30f259efcf82f19536dc2d1fb2db3a
+Block data: 
+Tom sent 21.0 VC to Sarah
+Alice sent 16.0 VC to Nick
+Nick sent 20.0 VC to FastFood
+Block was generating for: 0 seconds
+N stays the same
+
+Block:
+Created by: FastFood
+FastFood gets 100 VC
+Id: 11
+Timestamp: 1605005926529
+Magic number: -651971581
+Hash of the previous block: 
+00000f956ce76ed0e03235367fe5b5931a30f259efcf82f19536dc2d1fb2db3a
+Hash of the block: 
+0000022a02d8529b986689d1ba1e1610b5e102ce954b4f3b2ea90887c7550e0c
+Block data: 
+Tom sent 20.0 VC to Nick
+Block was generating for: 0 seconds
+N stays the same
+
+Block:
+Created by: Alice
+Alice gets 100 VC
+Id: 12
+Timestamp: 1605005927097
+Magic number: -1467869780
+Hash of the previous block: 
+0000022a02d8529b986689d1ba1e1610b5e102ce954b4f3b2ea90887c7550e0c
+Hash of the block: 
+00000b9d9f052671f1ede56f99d0abb9937cf34832b6f5c165716d634bbc0e09
+Block data: 
+FastFood sent 14.0 VC to Nick
+Block was generating for: 0 seconds
+N stays the same
+
+Block:
+Created by: ShoesShop
+ShoesShop gets 100 VC
+Id: 13
+Timestamp: 1605005927872
+Magic number: 48379833
+Hash of the previous block: 
+00000b9d9f052671f1ede56f99d0abb9937cf34832b6f5c165716d634bbc0e09
+Hash of the block: 
+000003cf5ad09ea8154a77a8bdb6eee2b09e06906b73af2555652227bb628555
+Block data: 
+Bob sent 15.0 VC to Sarah
+Bob sent 29.0 VC to Alice
+Block was generating for: 0 seconds
+N stays the same
+
+Block:
+Created by: Nick
+Nick gets 100 VC
+Id: 14
+Timestamp: 1605005928844
+Magic number: 657653897
+Hash of the previous block: 
+000003cf5ad09ea8154a77a8bdb6eee2b09e06906b73af2555652227bb628555
+Hash of the block: 
+000009ee874d4d2b6c6b2c15b81e22bc8385b96e0d17c031bba3b6ee4c24f241
+Block data: 
+FastFood sent 22.0 VC to Alice
+Bob sent 17.0 VC to Nick
+Block was generating for: 0 seconds
+N stays the same
+
+Block:
+Created by: Nick
+Nick gets 100 VC
+Id: 15
+Timestamp: 1605005930170
+Magic number: 738231170
+Hash of the previous block: 
+000009ee874d4d2b6c6b2c15b81e22bc8385b96e0d17c031bba3b6ee4c24f241
+Hash of the block: 
+000002d562d3eaed55c7feca37b5e9f55e5f1b5f6adad5ec55907b247f503918
+Block data: 
+Sarah sent 23.0 VC to Alice
+Alice sent 27.0 VC to Nick
+Block was generating for: 0 seconds
+N stays the same
+
+]]></system-out>
+  <system-err><![CDATA[java.lang.InterruptedException: sleep interrupted
+	at java.base/java.lang.Thread.sleep(Native Method)
+	at blockchain.TransactionGenerator.run(TransactionGenerator.java:38)
+java.lang.InterruptedException: sleep interrupted
+	at java.base/java.lang.Thread.sleep(Native Method)
+	at blockchain.TransactionGenerator.run(TransactionGenerator.java:38)
+]]></system-err>
+</testsuite>

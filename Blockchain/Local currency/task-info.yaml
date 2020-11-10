@@ -1,0 +1,1016 @@
+type: edu
+custom_name: stage6
+files:
+- name: test/BlockchainTest.java
+  visible: false
+  text: |
+    import blockchain.Main;
+    import org.hyperskill.hstest.stage.StageTest;
+    import org.hyperskill.hstest.testcase.CheckResult;
+    import org.hyperskill.hstest.testcase.TestCase;
+
+    import java.util.ArrayList;
+    import java.util.List;
+    import java.util.stream.Collectors;
+
+
+    class BlockParseException extends Exception {
+        BlockParseException(String msg) {
+            super(msg);
+        }
+    }
+
+
+    class Block {
+
+        int id;
+        long timestamp;
+        long magic;
+        String hashprev;
+        String hash;
+
+        static Block parseBlock(String strBlock) throws BlockParseException {
+            if (strBlock.length() == 0) {
+                return null;
+            }
+
+            if (!(strBlock.contains("Block:")
+                && strBlock.contains("Timestamp:"))) {
+
+                return null;
+            }
+
+            Block block = new Block();
+
+            List<String> lines = strBlock
+                .lines()
+                .map(String::strip)
+                .filter(e -> e.length() > 0)
+                .collect(Collectors.toList());
+
+            if (lines.size() < 13) {
+                throw new BlockParseException("Every block should " +
+                    "contain at least 13 lines of data");
+            }
+
+            if (!lines.get(0).equals("Block:")) {
+                throw new BlockParseException("First line of every block " +
+                    "should be \"Block:\"");
+            }
+
+            if (!lines.get(1).startsWith("Created by")) {
+                throw new BlockParseException("Second line of every block " +
+                    "should start with \"Created by\"");
+            }
+
+            if (!lines.get(2).contains("gets 100 VC")) {
+                throw new BlockParseException("Third line of every block " +
+                    "should contain \"gets 100 VC\"");
+            }
+
+            if (!lines.get(3).startsWith("Id:")) {
+                throw new BlockParseException("4-th line of every block " +
+                    "should start with \"Id:\"");
+            }
+
+            String id = lines.get(3).split(":")[1]
+                .strip().replace("-", "");
+            boolean isNumeric = id.chars().allMatch(Character::isDigit);
+
+            if (!isNumeric) {
+                throw new BlockParseException("Id should be a number");
+            }
+
+            block.id = Integer.parseInt(id);
+
+
+
+            if (!lines.get(4).startsWith("Timestamp:")) {
+                throw new BlockParseException("5-th line of every block " +
+                    "should start with \"Timestamp:\"");
+            }
+
+            String timestamp = lines.get(4).split(":")[1]
+                .strip().replace("-", "");
+            isNumeric = timestamp.chars().allMatch(Character::isDigit);
+
+            if (!isNumeric) {
+                throw new BlockParseException("Timestamp should be a number");
+            }
+
+            block.timestamp = Long.parseLong(timestamp);
+
+
+            if (!lines.get(5).startsWith("Magic number:")) {
+                throw new BlockParseException("6-th line of every block " +
+                    "should start with \"Magic number:\"");
+            }
+
+            String magic = lines.get(5).split(":")[1]
+                .strip().replace("-", "");
+            isNumeric = magic.chars().allMatch(Character::isDigit);
+
+            if (!isNumeric) {
+                throw new BlockParseException("Magic number should be a number");
+            }
+
+            block.magic = Long.parseLong(magic);
+
+
+
+            if (!lines.get(6).equals("Hash of the previous block:")) {
+                throw new BlockParseException("7-th line of every block " +
+                    "should be \"Hash of the previous block:\"");
+            }
+
+            if (!lines.get(8).equals("Hash of the block:")) {
+                throw new BlockParseException("9-th line of every block " +
+                    "should be \"Hash of the block:\"");
+            }
+
+            String prevhash = lines.get(7).strip();
+            String hash = lines.get(9).strip();
+
+            if (!(prevhash.length() == 64 || prevhash.equals("0"))
+                || !(hash.length() == 64)) {
+
+                throw new BlockParseException("Hash length should " +
+                    "be equal to 64 except \"0\"");
+            }
+
+            block.hash = hash;
+            block.hashprev = prevhash;
+
+            if (!lines.get(10).startsWith("Block data:")) {
+                throw new BlockParseException("11-th line of every block " +
+                    "should start with \"Block data:\"");
+            }
+
+            return block;
+        }
+
+
+        static List<Block> parseBlocks(String output) throws BlockParseException {
+            String[] strBlocks = output.split("\n\n");
+
+            List<Block> blocks = new ArrayList<>();
+
+            for (String strBlock : strBlocks) {
+                Block block = parseBlock(strBlock.strip());
+                if (block != null) {
+                    blocks.add(block);
+                }
+            }
+
+            return blocks;
+        }
+    }
+
+    class Clue {
+        String zeros;
+        Clue(int n) {
+            zeros = "0".repeat(n);
+        }
+    }
+
+
+    public class BlockchainTest extends StageTest<Clue> {
+        public BlockchainTest() {
+            super(Main.class);
+        }
+
+        List<String> previousOutputs = new ArrayList<>();
+
+        @Override
+        public List<TestCase<Clue>> generate() {
+            return List.of(
+                new TestCase<>(),
+                new TestCase<>()
+            );
+        }
+
+        @Override
+        public CheckResult check(String reply, Clue clue) {
+
+            if (previousOutputs.contains(reply)) {
+                return new CheckResult(false,
+                    "You already printed this text in the previous tests");
+            }
+
+            previousOutputs.add(reply);
+
+            List<Block> blocks;
+            try {
+                blocks = Block.parseBlocks(reply);
+            } catch (BlockParseException ex) {
+                return new CheckResult(false, ex.getMessage());
+            } catch (Exception ex) {
+                return CheckResult.wrong("");
+            }
+
+            if (blocks.size() != 15) {
+                return new CheckResult(false,
+                    "In this stage you should output 15 blocks, found " + blocks.size());
+            }
+
+            for (int i = 1; i < blocks.size(); i++) {
+                Block curr = blocks.get(i - 1);
+                Block next = blocks.get(i);
+
+                if (curr.id + 1 != next.id) {
+                    return new CheckResult(false,
+                        "Id`s of blocks should increase by 1");
+                }
+
+                if (next.timestamp < curr.timestamp) {
+                    return new CheckResult(false,
+                        "Timestamp`s of blocks should increase");
+                }
+
+                if (!next.hashprev.equals(curr.hash)) {
+                    return new CheckResult(false, "Two hashes aren't equal, " +
+                        "but should");
+                }
+            }
+
+
+            return CheckResult.correct();
+        }
+    }
+  learner_created: false
+- name: src/blockchain/Main.java
+  visible: true
+  text: |
+    package blockchain;
+
+    public class Main {
+        public static void main(String[] args) {
+            System.out.println("Hello World!");
+        }
+    }
+  learner_created: false
+- name: src/blockchain/StringUtil.java
+  visible: true
+  text: |
+    package blockchain;
+
+    import java.security.MessageDigest;
+
+    public class StringUtil {
+        /* Applies Sha256 to a string and returns a hash. */
+        public static String applySha256(String input){
+            try {
+                MessageDigest digest = MessageDigest.getInstance("SHA-256");
+                /* Applies sha256 to our input */
+                byte[] hash = digest.digest(input.getBytes("UTF-8"));
+                StringBuilder hexString = new StringBuilder();
+                for (byte elem: hash) {
+                    String hex = Integer.toHexString(0xff & elem);
+                    if(hex.length() == 1) hexString.append('0');
+                    hexString.append(hex);
+                }
+                return hexString.toString();
+            }
+            catch(Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+    }
+  learner_created: true
+- name: src/blockchain/ChainBlock.java
+  visible: true
+  text: |
+    package blockchain;
+
+    import java.io.Serializable;
+    import java.util.*;
+    import java.util.regex.Matcher;
+    import java.util.regex.Pattern;
+
+    public class ChainBlock implements Serializable {
+        private static final long serialVersionUID = 1L;
+        private long minerId;
+        private int id;
+        private long timestamp;
+        private int magicNumber;
+        private String hashPreviousBlock;
+        private String hashBlock;
+        private int genTime;
+        private int countLeadingZeros;
+        private int n;
+        private List<Message> messages;
+        volatile boolean isReady = false;
+
+        public ChainBlock(int id, long timestamp, String hashPreviousBlock, List<Message> messages, int countLeadingZeros, int n) {
+            this.id = id;
+            this.timestamp = timestamp;
+            this.hashPreviousBlock = hashPreviousBlock;
+            this.messages = new ArrayList<>(messages);
+            this.countLeadingZeros = countLeadingZeros;
+            this.n = n;
+        }
+
+        public List<Message> getMessages() {
+            return messages;
+        }
+
+        public void genBlock(long minerId) {
+            Random r = new Random();
+            long startTimeStamp = new Date().getTime();
+            StringBuffer leadingZeros = new StringBuffer();
+            for (int i = 0; i < countLeadingZeros; i++) {
+                leadingZeros.append("0");
+            }
+            String regex = leadingZeros.toString() + ".*";
+            Pattern pattern = Pattern.compile(regex);
+            while (true) {
+                int magicNumber = r.nextInt();
+                String hash = StringUtil.applySha256(new StringBuffer(id)
+                        .append(timestamp)
+                        .append(magicNumber)
+                        .append(messages)
+                        .append(hashPreviousBlock).toString());
+                Matcher matcher = pattern.matcher(hash);
+                if (matcher.matches() && this.isReady == false) {
+                    this.genTime = (int) (new Date().getTime() - startTimeStamp) / 1000;
+                    this.isReady = true;
+                    this.magicNumber = magicNumber;
+                    this.hashBlock = hash;
+                    this.minerId = minerId;
+                    return;
+                }
+                if (this.isReady) {
+                    return;
+                }
+
+            }
+
+        }
+
+        public boolean isReady() {
+            return isReady;
+        }
+
+        public int getGenTime() {
+            return genTime;
+        }
+
+        public int getMaxMessageIdentifier() {
+            return messages.isEmpty() ? 0 : messages.stream().max(Comparator.comparingInt(Message::getIdentifier)).get().getIdentifier();
+        }
+
+        public int getMagicNumber() {
+            return magicNumber;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public long getTimestamp() {
+            return timestamp;
+        }
+
+        public String getHashPreviousBlock() {
+            return hashPreviousBlock;
+        }
+
+        public String getHashBlock() {
+            return hashBlock != null ? hashBlock : "0";
+        }
+
+        public int getCountLeadingZeros() {
+            return countLeadingZeros;
+        }
+
+        public boolean checkBlock() {
+            return StringUtil.applySha256(new StringBuffer(this.getId())
+                    .append(this.getTimestamp())
+                    .append(this.getMagicNumber())
+                    .append(this.getMessages())
+                    .append(this.getHashPreviousBlock()).toString())
+                    .equals(this.getHashBlock());
+
+        }
+
+        @Override
+        public String toString() {
+            final StringBuilder sb = new StringBuilder("Block:");
+            sb.append("\nCreated by miner # ").append(minerId);
+            sb.append("\nId: ").append(id);
+            sb.append("\nTimestamp: ").append(timestamp);
+            sb.append("\nMagic number: ").append(magicNumber);
+            sb.append("\nHash of the previous block: \n").append(hashPreviousBlock);
+            sb.append("\nHash of the block: \n").append(hashBlock);
+            sb.append("\nBlock data: ");
+            if (messages.size() > 0) {
+                sb.append("\n");
+                getMessages().stream()
+                        .forEach(e -> sb.append(new StringBuffer().append(e.getAuthor() + ": " + e.getMessage() + "\n").toString()));
+            } else {
+                sb.append("no messages\n");
+            }
+            sb.append("Block was generating for: ").append(genTime).append(" seconds");
+            if (n > 0) {
+                sb.append("\nN was increased to ").append(countLeadingZeros + 1).append("\n");
+            } else if (n < 0) {
+                sb.append("\nN was decreased by ").append(Math.abs(n)).append("\n");
+            } else {
+                sb.append("\nN stays the same\n");
+            }
+            return sb.toString();
+        }
+    }
+  learner_created: true
+- name: src/blockchain/Blockchain.java
+  visible: true
+  text: |
+    package blockchain;
+
+    import java.io.*;
+    import java.nio.file.Files;
+    import java.nio.file.Paths;
+    import java.nio.file.StandardCopyOption;
+    import java.util.ArrayList;
+    import java.util.Comparator;
+    import java.util.Date;
+    import java.util.List;
+
+    public class Blockchain {
+
+        private File fileForSave;
+        private List<ChainBlock> blockList = new ArrayList<>();
+        private int countLeadingZeros = 2;
+        private int n = 0;
+        private int i = 0;
+        private long timeStamp;
+        private ChainBlock lastAddedBlock;
+        private List<Message> messages;
+        private int messageIdentifier = 0;
+        private SignHelper signHelper = new SignHelper();
+
+        public Blockchain(String filePath, boolean isNew) throws IOException {
+            this.messages = new ArrayList<>();
+            setFileForSave(filePath, isNew);
+        }
+
+        public synchronized void addBlock(ChainBlock block) {
+            try {
+                SerializationUtils.serialize(block, fileForSave.getAbsolutePath());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public int getMessageIdentifier() {
+            return ++messageIdentifier;
+        }
+
+        public ChainBlock getBlockForMining() {
+            if (lastAddedBlock.isReady) {
+                timeStamp = new Date().getTime();
+                lastAddedBlock = new ChainBlock(++i, timeStamp, getPrevBlockHash(), messages, getCountLeadingZeros(), n);
+                messages.clear();
+            }
+            return lastAddedBlock;
+        }
+
+        private int getCountLeadingZeros() {
+            if (lastAddedBlock.getGenTime() < 10) {
+                n = 1;
+                return ++countLeadingZeros;
+            } else if (lastAddedBlock.getGenTime() > 13 && countLeadingZeros > 0) {
+                n = -1;
+                return --countLeadingZeros;
+            } else {
+                n = 0;
+                return countLeadingZeros;
+            }
+        }
+
+        public static boolean checkBlockChain(List<ChainBlock> blockChain) {
+            for (int i = 0; i < blockChain.size(); i++) {
+                if (i == 0 && blockChain.get(i).getId() == 1 && !blockChain.get(i).getHashPreviousBlock().equals("0")) {
+                    return false;
+                }
+                if (i > 0 && blockChain.get(i).getHashPreviousBlock() != blockChain.get(i - 1).getHashBlock()) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private String getPrevBlockHash() {
+            return lastAddedBlock.getHashBlock();
+        }
+
+        public synchronized void sendMessage(Message message) {
+            int maxSavedMessageIdentifier = 0;
+            if (!messages.isEmpty()) {
+                maxSavedMessageIdentifier = messages.stream().max(Comparator.comparingInt(Message::getIdentifier)).get().getIdentifier();
+            }
+            if (message.getIdentifier() > maxSavedMessageIdentifier) {
+                try {
+                    if (signHelper.verifyMessageSignature(message)) {
+                        this.messages.add(message);
+                    }
+                } catch (Exception e) {
+                    System.out.println("Signature not valid!");
+                    e.printStackTrace();
+                }
+            } else {
+                System.out.println("Error saving message. Bad identifier!");
+            }
+
+        }
+
+        public List<ChainBlock> getBlockList() throws IOException, ClassNotFoundException {
+            return readFromFile(fileForSave);
+        }
+
+        private void setFileForSave(String fileName, boolean isNew) throws IOException {
+
+            this.fileForSave = new File(fileName);
+            File parent = fileForSave.getParentFile();
+            if (!parent.exists() && !parent.mkdirs()) {
+                throw new IllegalStateException("Couldn't create dir: " + parent);
+            }
+            if (fileForSave.exists() && fileForSave.length() != 0) {
+                if (isNew) {
+                    long curTime = new Date().getTime();
+                    try {
+                        String arcDir = fileForSave.getParent() + "/arch/";
+                        Files.createDirectories(Paths.get(arcDir));
+                        Files.copy(fileForSave.toPath(),
+                                (new File(arcDir + curTime + "_" + fileForSave.getName()).toPath()),
+                                StandardCopyOption.REPLACE_EXISTING);
+                        PrintWriter writer = new PrintWriter(fileForSave);
+                        writer.print("");
+                        writer.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } else {
+                try {
+                    fileForSave.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            try {
+                blockList = readFromFile(fileForSave);
+            } catch (ClassNotFoundException | IOException e) {
+                e.printStackTrace();
+            }
+            if (blockList.size() == 0) {
+                this.timeStamp = new Date().getTime();
+                lastAddedBlock = new ChainBlock(++i, timeStamp, "0", messages, countLeadingZeros, 0);
+                long minerId = Thread.currentThread().getId();
+                lastAddedBlock.genBlock(minerId);
+                blockList.add(lastAddedBlock);
+                SerializationUtils.serialize(lastAddedBlock, fileForSave.getAbsolutePath());
+            }
+            lastAddedBlock = blockList.get(blockList.size() - 1);
+        }
+
+        private List<ChainBlock> readFromFile(File fileForSave) throws ClassNotFoundException, IOException {
+            List<ChainBlock> res = new ArrayList<>();
+            FileInputStream fis = null;
+            try {
+                fis = new FileInputStream(fileForSave);
+                while (true) {
+                    ObjectInputStream ois = new ObjectInputStream(fis);
+                    ChainBlock newBlock = (ChainBlock) ois.readObject();
+                    this.i = newBlock.getId();
+                    this.countLeadingZeros = newBlock.getCountLeadingZeros();
+                    this.messageIdentifier = newBlock.getMaxMessageIdentifier();
+                    res.add(newBlock);
+                }
+            } catch (IOException ignored) {
+                // as expected
+            } finally {
+                if (fis != null)
+                    fis.close();
+            }
+            return res;
+        }
+
+    }
+  learner_created: true
+- name: src/blockchain/TestDrive.java
+  visible: true
+  text: |
+    package blockchain;
+
+    import java.io.File;
+
+    public class TestDrive {
+        public static void main(String[] args) {
+            String privateKeyPath = "/Users/vetal/Developing/study/myTests/KeyPair/privateKey";
+            String publicKeyPath = "/Users/vetal/Developing/study/myTests/KeyPair/publicKey";
+            File privateKey = new File(privateKeyPath);
+            File publicKey = new File(publicKeyPath);
+            SignHelper signHelper = new SignHelper(privateKey, publicKey);
+            String data = "test";
+            String sign = "";
+            try {
+                sign = signHelper.sign(privateKey, data);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            System.out.println(sign);
+            var isValid = false;
+            try {
+                isValid = signHelper.verifySignature(data, sign);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            System.out.println(isValid);
+            System.out.println(signHelper.isKeyPairValid());
+            Person person = new Person("Test", privateKey, publicKey);
+            System.out.println(person.isIdentified());
+            Message m = SignHelper.signMessage(new Message("Hey, I'm first!", 1), person);
+            System.out.println(m.getPublicKey());
+        }
+    }
+  learner_created: true
+- name: src/blockchain/FileProcessor.java
+  visible: true
+  text: |
+    package blockchain;
+
+    import java.io.File;
+    import java.io.IOException;
+
+    public class FileProcessor {
+        String filePath;
+        File file;
+
+        public FileProcessor(String filePath) {
+            this.filePath = filePath;
+            this.file = new File(filePath);
+            file.getParentFile().mkdirs();
+            try {
+                boolean createdNew = file.createNewFile();
+                if (createdNew) {
+                    System.out.println("The file was successfully created.");
+                } else {
+                    System.out.println("The file already exists.");
+                }
+            } catch (IOException e) {
+                System.out.println("Cannot create the file: " + file.getPath());
+                e.printStackTrace();
+            }
+        }
+
+        public void setFilePath(String filePath) {
+            this.filePath = filePath;
+        }
+
+        public String getFilePath() {
+            return filePath;
+        }
+
+        public File getFile() {
+            return file;
+        }
+    }
+  learner_created: true
+- name: src/blockchain/SerializationUtils.java
+  visible: true
+  text: |
+    package blockchain;
+
+    import java.io.*;
+
+    public class SerializationUtils {
+        /**
+         * Serialize the given object to the file
+         */
+        public static void serialize(Object obj, String fileName) throws IOException {
+            FileOutputStream fos = new FileOutputStream(fileName, true);
+            BufferedOutputStream bos = new BufferedOutputStream(fos);
+            ObjectOutputStream oos = new ObjectOutputStream(bos);
+            oos.writeObject(obj);
+            oos.close();
+        }
+
+        /**
+         * Deserialize to an object from the file
+         */
+        public static Object deserialize(String fileName) throws IOException, ClassNotFoundException {
+            FileInputStream fis = new FileInputStream(fileName);
+            BufferedInputStream bis = new BufferedInputStream(fis);
+            ObjectInputStream ois = new ObjectInputStream(bis);
+            Object obj = ois.readObject();
+            ois.close();
+            return obj;
+        }
+
+    }
+  learner_created: true
+- name: src/blockchain/SignHelper.java
+  visible: true
+  text: |
+    package blockchain;
+
+    import java.io.*;
+    import java.nio.charset.StandardCharsets;
+    import java.nio.file.Files;
+    import java.security.*;
+    import java.security.spec.PKCS8EncodedKeySpec;
+    import java.security.spec.X509EncodedKeySpec;
+    import java.util.Base64;
+
+    public class SignHelper {
+
+        private File privateKeyFile;
+        private File publicKeyFile;
+        private String testData;
+
+        public SignHelper(File privateKey, File publicKey) {
+            this.privateKeyFile = privateKey;
+            this.publicKeyFile = publicKey;
+            this.testData = "test";
+        }
+
+        public SignHelper() {
+        }
+
+        private PrivateKey getPrivate(File privateKeyFile) throws Exception {
+            byte[] keyBytes = Files.readAllBytes(privateKeyFile.toPath());
+            PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
+            KeyFactory kf = KeyFactory.getInstance("RSA");
+            return kf.generatePrivate(spec);
+        }
+
+        public byte[] sign(PrivateKey privateKey, String data) throws InvalidKeyException, Exception {
+            Signature rsa = Signature.getInstance("SHA1withRSA");
+            rsa.initSign(privateKey);
+            rsa.update(data.getBytes());
+            return rsa.sign();
+        }
+
+        public String sign(File privateKeyFile, String data) throws InvalidKeyException, Exception {
+            Signature rsa = Signature.getInstance("SHA1withRSA");
+            rsa.initSign(getPrivate(privateKeyFile));
+            rsa.update(data.getBytes());
+            return Base64.getEncoder().encodeToString(rsa.sign());
+        }
+
+        public boolean verifySignature(String data, String signature) throws Exception {
+            Signature sig = Signature.getInstance("SHA1withRSA");
+            sig.initVerify(getPublic());
+            sig.update(data.getBytes(StandardCharsets.UTF_8));
+            return sig.verify(Base64.getDecoder().decode(signature));
+        }
+
+        private PublicKey getPublic() throws Exception {
+            byte[] keyBytes = Files.readAllBytes(publicKeyFile.toPath());
+            X509EncodedKeySpec spec = new X509EncodedKeySpec(keyBytes);
+            KeyFactory kf = KeyFactory.getInstance("RSA");
+            return kf.generatePublic(spec);
+        }
+
+        private PublicKey getPublic(String publicKey) throws Exception {
+            byte[] keyBytes = Base64.getDecoder().decode(publicKey);
+            X509EncodedKeySpec spec = new X509EncodedKeySpec(keyBytes);
+            KeyFactory kf = KeyFactory.getInstance("RSA");
+            return kf.generatePublic(spec);
+        }
+
+        public boolean isKeyPairValid() {
+            if (privateKeyFile != null && publicKeyFile != null) {
+                try {
+                    String sign = sign(privateKeyFile, testData);
+                    return verifySignature(testData, sign);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+
+        public void setPrivateKeyFile(File privateKeyFile) {
+            this.privateKeyFile = privateKeyFile;
+        }
+
+        public static Message signMessage(Message message, Person signer) {
+            String signature = signer.signData(message.getDataForSign());
+            message.setSignature(signature);
+            message.setPublicKey(signer.getPublicKey());
+            message.setAuthor(signer.getName());
+            return message;
+        }
+
+        public boolean verifyMessageSignature(Message message) throws Exception {
+            Signature sig = Signature.getInstance("SHA1withRSA");
+            sig.initVerify(getPublic(message.getPublicKey()));
+            sig.update(message.getDataForSign().getBytes(StandardCharsets.UTF_8));
+            return sig.verify(Base64.getDecoder().decode(message.getSignature()));
+        }
+    }
+  learner_created: true
+- name: src/blockchain/Person.java
+  visible: true
+  text: |
+    package blockchain;
+
+    import java.io.File;
+    import java.io.IOException;
+    import java.nio.file.Files;
+    import java.util.Base64;
+
+    public class Person {
+        private String name;
+        private File privateKeyFile;
+        private File publicKeyFile;
+        private SignHelper signHelper;
+        private boolean isIdentified = false;
+
+        public Person(String name, File privateKey, File publicKey) {
+            this.name = name;
+            this.privateKeyFile = privateKey;
+            this.publicKeyFile = publicKey;
+            this.isIdentified = checkKeyPair();
+        }
+
+        public Person(String name, File publicKey) {
+            this.name = name;
+            this.publicKeyFile = publicKey;
+        }
+
+        public void setPrivateKeyFile(File privateKeyFile) {
+            this.privateKeyFile = privateKeyFile;
+            this.isIdentified = checkKeyPair();
+        }
+
+        private boolean checkKeyPair() {
+            signHelper = new SignHelper(privateKeyFile, publicKeyFile);
+            return signHelper.isKeyPairValid();
+        }
+
+        public String getName() {
+            return isIdentified || privateKeyFile == null ? name : "user not identified";
+        }
+
+        public File getPrivateKeyFile() {
+            return isIdentified ? privateKeyFile : null;
+        }
+
+        public File getPublicKeyFile() {
+            return isIdentified || privateKeyFile == null ? publicKeyFile : null;
+        }
+
+        public String getPublicKey() {
+            try {
+                return isIdentified ? Base64.getEncoder().encodeToString(Files.readAllBytes(publicKeyFile.toPath())) : null;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return "file_read_error";
+            }
+        }
+
+        public String signData(String data) {
+            if (isIdentified) {
+                try {
+                    return signHelper.sign(privateKeyFile, data);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            } else {
+                return null;
+            }
+        }
+
+        public boolean isIdentified() {
+            return isIdentified;
+        }
+
+    }
+  learner_created: true
+- name: src/blockchain/MessageSender.java
+  visible: true
+  text: |
+    package blockchain;
+
+    import java.io.File;
+
+    public class MessageSender extends Thread {
+        Blockchain blockchain;
+        Message[] messages;
+
+        public MessageSender(Blockchain blockchain) {
+            this.blockchain = blockchain;
+            String privateKeyPath = "/Users/vetal/Developing/study/myTests/KeyPair/privateKey";
+            String publicKeyPath = "/Users/vetal/Developing/study/myTests/KeyPair/publicKey";
+            File privateKey = new File(privateKeyPath);
+            File publicKey = new File(publicKeyPath);
+            Person Tom = new Person("Tom", privateKey, publicKey);
+            Person Sarah = new Person("Sarah", privateKey, publicKey);
+            Person Nick = new Person("Nick", privateKey, publicKey);
+            this.messages = new Message[]{
+                    SignHelper.signMessage(new Message("Hey, I'm first!", blockchain.getMessageIdentifier()), Tom),
+                    SignHelper.signMessage(new Message("It's not fair!", blockchain.getMessageIdentifier()), Sarah),
+                    SignHelper.signMessage(new Message("You always will be first because it is your blockchain!", blockchain.getMessageIdentifier()), Sarah),
+                    SignHelper.signMessage(new Message("Anyway, thank you for this amazing chat.", blockchain.getMessageIdentifier()), Sarah),
+                    SignHelper.signMessage(new Message("You're welcome :)", blockchain.getMessageIdentifier()), Tom),
+                    SignHelper.signMessage(new Message("Hey Tom, nice chat", blockchain.getMessageIdentifier()), Nick),
+            };
+        }
+
+        @Override
+        public void run() {
+            for (Message sendMessage : messages) {
+                blockchain.sendMessage(sendMessage);
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+  learner_created: true
+- name: src/blockchain/Message.java
+  visible: true
+  text: |
+    package blockchain;
+
+    import java.io.Serializable;
+
+    public class Message implements Serializable {
+        private String author;
+        private String message;
+        private String signature;
+        private String publicKey;
+        private int identifier;
+
+        public Message(String author, String message, String signature, String publicKey, int identifier) {
+            this.author = author;
+            this.message = message;
+            this.signature = signature;
+            this.publicKey = publicKey;
+            this.identifier = identifier;
+        }
+
+        public Message(String message, int identifier) {
+            this.message = message;
+            this.identifier = identifier;
+        }
+
+        public int getIdentifier() {
+            return identifier;
+        }
+
+        public String getSignature() {
+            return signature;
+        }
+
+        public String getPublicKey() {
+            return publicKey;
+        }
+
+        public void setSignature(String signature) {
+            this.signature = signature;
+        }
+
+        public void setAuthor(String author) {
+            this.author = author;
+        }
+
+        public void setPublicKey(String publicKey) {
+            this.publicKey = publicKey;
+        }
+
+        public String getAuthor() {
+            return author;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public String getDataForSign() {
+            return new StringBuffer().append(identifier).append(message).toString();
+        }
+    }
+  learner_created: true
+- name: src/blockchain/WalletTransaction.java
+  visible: true
+  learner_created: true
+- name: src/blockchain/TransactionGenerator.java
+  visible: true
+  learner_created: true
+feedback_link: https://hyperskill.org/projects/50/stages/276/implement
+status: Solved
+feedback:
+  message: Congratulations! Continue on <a href="https://hyperskill.org/projects/50/stages/276/implement">JetBrains
+    Academy</a>
+  time: Tue, 10 Nov 2020 10:58:51 UTC
+record: -1
